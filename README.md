@@ -23,8 +23,7 @@ cd flux/
 vim deploy/flux-deployment.yaml
 ```
 
-在这里，我们需要将--git-url更改为存储生产环境yaml文件的Github Repo，当然如果不想把生产环境的yaml文件托管在Github上，Flux也提供了Gitlab的支持去更好的进行私有环境的部署与管理。将`- --git-path=subdir1,subdir2`修改为`- --git-path=namespaces,workloads`（可选，根据需要选择）
-
+在这里，我们需要将--git-url更改为存储生产环境yaml文件的Github Repo，当然如果不想把生产环境的yaml文件托管在Github上，Flux也提供了Gitlab的支持去更好的进行私有环境的部署与管理。另外还需要将`- --git-path=subdir1,subdir2`修改为`- --git-path=namespaces,workloads`，修改好的配置如下：
 
 ```text
 142         # Replace the following URL to change the Git repository used by Flux.
@@ -34,7 +33,7 @@ vim deploy/flux-deployment.yaml
 146         - --git-branch=master
 147         # Include this if you want to restrict the manifests considered by flux
 148         # to those under the following relative paths in the git repository
-149         # - --git-path=namespaces,workloads
+149         - --git-path=namespaces,workloads
 150         - --git-label=flux-sync
 151         - --git-user=Flux automation
 152         - --git-email=flux@example.com
