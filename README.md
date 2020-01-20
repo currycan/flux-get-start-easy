@@ -32,21 +32,29 @@ cd flux/
 vim deploy/flux-deployment.yaml
 ```
 
-在这里，我们需要将--git-url更改为存储生产环境yaml文件的Github Repo，当然如果不想把生产环境的yaml文件托管在Github上，Flux也提供了Gitlab的支持去更好的进行私有环境的部署与管理。另外还需要将`- --git-path=subdir1,subdir2`修改为`- --git-path=namespaces,workloads`，修改好的配置如下：
 [服务端各配置项参数](https://docs.fluxcd.io/en/1.17.1/references/daemon.html)
+需要修改以下字段：
+
+* `git-url`，修改为部署文件github地址
+* `git-branch`，默认为master，根据需要可修改
+* `git-path`，建议设为‘.’（默认值会报错）
+* `git-user`，修改为github用户名
+* `git-email`，修改为GitHub邮箱
 
 ```text
-142         # Replace the following URL to change the Git repository used by Flux.
-143         # HTTP basic auth credentials can be supplied using environment variables:
-144         # https://$(GIT_AUTHUSER):$(GIT_AUTHKEY)@github.com/user/repository.git
-145         - --git-url=git@github.com:currycan/flux-get-started-easy
-146         - --git-branch=master
-147         # Include this if you want to restrict the manifests considered by flux
-148         # to those under the following relative paths in the git repository
-149         - --git-path=namespaces,workloads
-150         - --git-label=flux-sync
-151         - --git-user=Flux automation
-152         - --git-email=flux@example.com
+143         # Replace the following URL to change the Git repository used by Flux.
+144         # HTTP basic auth credentials can be supplied using environment variables:
+145         # https://$(GIT_AUTHUSER):$(GIT_AUTHKEY)@github.com/user/repository.git
+146         - --git-url=git@github.com:currycan/flux-get-start-easy
+147         - --git-branch=master
+148         # Include this if you want to restrict the manifests considered by flux
+149         # to those under the following relative paths in the git repository
+150         # - --git-path=subdir1,subdir2
+151         - --git-path=.
+152         - --git-label=flux-sync
+153         - --git-user=currycan
+154         - --git-email=ansandyzzt@gmail.com
+```        - --git-email=flux@example.com
 ```
 
 部署Flux到Kubernetes集群中

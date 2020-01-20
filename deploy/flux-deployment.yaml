@@ -130,6 +130,7 @@ spec:
         # or with a different service name, you can supply these
         # following two arguments to tell fluxd how to connect to it.
         # - --memcached-hostname=memcached.default.svc.cluster.local
+        - --memcached-hostname=memcached.flux
 
         # Use the memcached ClusterIP service name by setting the
         # memcached-service to string empty
@@ -146,10 +147,11 @@ spec:
         - --git-branch=master
         # Include this if you want to restrict the manifests considered by flux
         # to those under the following relative paths in the git repository
-        # - --git-path=namespaces,workloads
+        # - --git-path=subdir1,subdir2
+        - --git-path=.
         - --git-label=flux-sync
-        - --git-user=Flux automation
-        - --git-email=flux@example.com
+        - --git-user=currycan
+        - --git-email=ansandyzzt@gmail.com
 
         # Include these two to enable git commit signing
         # - --git-gpg-key-import=/root/gpg-import
@@ -170,7 +172,7 @@ spec:
         # - --token=abc123abc123abc123abc123
 
         # Enable manifest generation (default `false`)
-        # - --manifest-generation=false
+        - --manifest-generation=true
 
         # Serve /metrics endpoint at different port;
         # make sure to set prometheus' annotation to scrape the port value.
