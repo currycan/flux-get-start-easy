@@ -15,6 +15,15 @@ GitOps, 这已经并不是一个新鲜的概念了。2018年5月初在丹麦举�
 
 ## Flux CD 实践demo
 
+部署demo应用
+
+```bash
+git clone https://github.com/currycan/flux-get-start-easy
+cd flux-get-start-easy/
+kubectl apply -f nginx-deployment-flux.yaml
+kubectl apply -f nginx-service-flux.yaml
+```
+
 Clone[ Flux项目](https://github.com/fluxcd/flux)的Github Repo
 
 ```bash
@@ -24,6 +33,7 @@ vim deploy/flux-deployment.yaml
 ```
 
 在这里，我们需要将--git-url更改为存储生产环境yaml文件的Github Repo，当然如果不想把生产环境的yaml文件托管在Github上，Flux也提供了Gitlab的支持去更好的进行私有环境的部署与管理。另外还需要将`- --git-path=subdir1,subdir2`修改为`- --git-path=namespaces,workloads`，修改好的配置如下：
+[服务端各配置项参数](https://docs.fluxcd.io/en/1.17.1/references/daemon.html)
 
 ```text
 142         # Replace the following URL to change the Git repository used by Flux.
@@ -81,20 +91,15 @@ $ kubectl create secret -n flux generic flux-git-deploy --from-file=identity=./g
 Error from server (AlreadyExists): secrets "flux-git-deploy" already exists
 ```
 
-这里会报错，secret已存在，需先删除
+这里会报错，secret已存在，需先删除后创建
 
 ```bash
 $ kubectl delete secrets -n flux flux-git-deploy
 secret "flux-git-deploy" deleted
-```
-
-删除secret后，flux如果报错，请仔细确认证书是否正确
-
-验证是否成功：
-
-```bash
 $ kubectl create secret -n flux generic flux-git-deploy --from-file=identity=./git_ssh_key
 secret/flux-git-deploy created
+$ kubectl delete $(kubectl get pod -n flux -o name -l name=flux) -n flux
+pod "flux-587d4f7674-kkjl9" deleted$ fluxctl sync --k8s-fwd-ns flux
 $ fluxctl sync --k8s-fwd-ns flux
 Synchronizing with ssh://git@github.com/currycan/flux-get-start-easy
 Revision of master to apply is 895d133
@@ -102,18 +107,7 @@ Waiting for 895d133 to be applied ...
 Done.
 ```
 
-部署demo
-其实，如果配置都正确了，demo就已经部署好了
-
-```bash
-$ fluxctl sync --k8s-fwd-ns flux
-Synchronizing with ssh://git@github.com/currycan/flux-get-start-easy
-Revision of master to apply is 9e44ff2
-Waiting for 9e44ff2 to be applied ...
-Done.
-```
-
-查看是否部署完成
+查看现有demo信息
 
 ```bash
 $ kubectl get po
@@ -201,3 +195,11 @@ Run 'fluxctl sync --help' for usage.
 ```
 
 在同步git配置的时候，出现过 status cloned 报错，始终找不到原因。后来发现是部署flux的时候`flux-deployment.yaml`配置不对，确保 `--git-url`正确（出现git 地址拼写错误）
+
+以上确认后无误后执行：
+
+```bash
+kubectl delete $(kubectl get pod -n flux -o name -l name=flux) -n flux
+```
+
+另外，[官方常见问题答疑](https://github.com/fluxcd/flux/blob/master/docs/faq.md)
