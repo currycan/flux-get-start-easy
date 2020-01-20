@@ -54,7 +54,6 @@ vim deploy/flux-deployment.yaml
 152         - --git-label=flux-sync
 153         - --git-user=currycan
 154         - --git-email=ansandyzzt@gmail.com
-```         - --git-email=flux@example.com
 ```
 
 部署Flux到Kubernetes集群中
