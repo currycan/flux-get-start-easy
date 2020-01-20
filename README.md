@@ -115,6 +115,8 @@ Waiting for 895d133 to be applied ...
 Done.
 ```
 
+**事实上**，如果开始就不打算使用flux创建的秘钥，可以先创建好ns后创建secret，然后apply其他资源。另外，如果配置没有问题。可直接使用`fluxctl sync --k8s-fwd-ns flux`部署服务，不需要提前部署。
+
 查看现有demo信息
 
 ```bash
